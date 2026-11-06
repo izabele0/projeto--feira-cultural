@@ -1,0 +1,136 @@
+
+const campoTexto = document.getElementById("texto");
+const campoVoz = document.getElementById("voz");
+const velocidade = document.getElementById("velocidade");
+const status = document.getElementById("status");
+
+let vozes = [];
+
+function carregarVozes() {
+
+    vozes = speechSynthesis.getVoices();
+
+    campoVoz.innerHTML = "";
+
+    const vozesPortugues = vozes.filter(voz =>
+        voz.lang.toLowerCase().startsWith("pt")
+    );
+
+    const lista = vozesPortugues.length
+        ? vozesPortugues
+        : vozes;
+
+    lista.forEach((voz) => {
+
+        const opcao = document.createElement("option");
+
+        opcao.value = vozes.indexOf(voz);
+
+        opcao.textContent =
+            voz.name + " (" + voz.lang + ")";
+
+        campoVoz.appendChild(opcao);
+
+    });
+
+    if (lista.length === 0) {
+        campoVoz.innerHTML =
+            '<option value="">Nenhuma voz disponível</option>';
+    }
+}
+
+speechSynthesis.onvoiceschanged = carregarVozes;
+
+carregarVozes();
+
+
+function falar() {
+
+    const texto = campoTexto.value.trim();
+
+    if (texto === "") {
+
+        status.textContent =
+            "Por favor, escreva um texto primeiro.";
+
+        campoTexto.focus();
+
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    const leitura = new SpeechSynthesisUtterance(texto);
+
+    const indice = Number(campoVoz.value);
+
+    if (campoVoz.value !== "" && vozes[indice]) {
+        leitura.voice = vozes[indice];
+    }
+
+    leitura.rate = Number(velocidade.value);
+
+    leitura.lang = "pt-BR";
+
+    leitura.onstart = function() {
+        status.textContent =
+            "Lendo seu texto em voz alta...";
+    };
+
+    leitura.onend = function() {
+        status.textContent =
+            "Leitura concluída!";
+    };
+
+    leitura.onerror = function() {
+        status.textContent =
+            "Não foi possível reproduzir a voz.";
+    };
+
+    speechSynthesis.speak(leitura);
+}
+
+
+function pausar() {
+
+    if (
+        speechSynthesis.speaking &&
+        !speechSynthesis.paused
+    ) {
+
+        speechSynthesis.pause();
+
+        status.textContent = "Leitura pausada.";
+    }
+}
+
+
+function continuar() {
+
+    if (speechSynthesis.paused) {
+
+        speechSynthesis.resume();
+
+        status.textContent = "Continuando a leitura...";
+    }
+}
+
+
+function parar() {
+
+    speechSynthesis.cancel();
+
+    status.textContent = "Leitura interrompida.";
+}
+
+
+function limpar() {
+
+    speechSynthesis.cancel();
+
+    campoTexto.value = "";
+
+    status.textContent = "Texto apagado.";
+
+    campoTexto.focus();
+}

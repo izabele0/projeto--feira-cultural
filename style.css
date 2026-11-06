@@ -1,0 +1,154 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #101820;
+    color: white;
+    min-height: 100vh;
+    padding: 25px;
+}
+
+header {
+    text-align: center;
+    padding: 25px;
+}
+
+header h1 {
+    font-size: 38px;
+    color: #FFD700;
+    margin-bottom: 12px;
+}
+
+header p {
+    font-size: 20px;
+}
+
+main {
+    max-width: 850px;
+    margin: 25px auto;
+    background: white;
+    color: #101820;
+    padding: 30px;
+    border-radius: 15px;
+}
+
+label {
+    display: block;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+textarea {
+    width: 100%;
+    height: 230px;
+    padding: 18px;
+    font-size: 21px;
+    border: 3px solid #333;
+    border-radius: 10px;
+    resize: vertical;
+}
+
+textarea:focus,
+select:focus,
+button:focus {
+    outline: 4px solid #ff9800;
+    outline-offset: 3px;
+}
+
+.configuracoes {
+    margin-top: 25px;
+}
+
+select {
+    width: 100%;
+    padding: 15px;
+    font-size: 19px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.botoes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+button {
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.falar {
+    background: #087A35;
+    color: white;
+}
+
+.pausar {
+    background: #F0B400;
+    color: #111;
+}
+
+.continuar {
+    background: #145DA0;
+    color: white;
+}
+
+.parar {
+    background: #B00020;
+    color: white;
+}
+
+.limpar {
+    background: #333;
+    color: white;
+    grid-column: span 2;
+}
+
+#status {
+    margin-top: 25px;
+    font-size: 19px;
+    font-weight: bold;
+    text-align: center;
+    color: #145DA0;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    font-size: 17px;
+}
+
+@media (max-width: 600px) {
+
+    header h1 {
+        font-size: 30px;
+    }
+
+    main {
+        padding: 20px;
+    }
+
+    .botoes {
+        grid-template-columns: 1fr;
+    }
+
+    .limpar {
+        grid-column: span 1;
+    }
+}
