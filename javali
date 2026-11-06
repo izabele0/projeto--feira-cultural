@@ -12,31 +12,33 @@ function carregarVozes() {
 
     campoVoz.innerHTML = "";
 
+    // Seleciona somente vozes em português
     const vozesPortugues = vozes.filter(voz =>
-        voz.lang.toLowerCase().startsWith("pt")
+        voz.lang.toLowerCase() === "pt-br"
     );
 
-    const lista = vozesPortugues.length
-        ? vozesPortugues
-        : vozes;
+    if (vozesPortugues.length === 0) {
 
-    lista.forEach((voz) => {
+        campoVoz.innerHTML =
+            '<option value="">Voz pt-BR não encontrada no dispositivo</option>';
+
+        status.textContent =
+            "Instale uma voz em português do Brasil no seu dispositivo.";
+
+        return;
+    }
+
+    vozesPortugues.forEach((voz) => {
 
         const opcao = document.createElement("option");
 
         opcao.value = vozes.indexOf(voz);
 
-        opcao.textContent =
-            voz.name + " (" + voz.lang + ")";
+        opcao.textContent = voz.name + " (Português Brasil)";
 
         campoVoz.appendChild(opcao);
 
     });
-
-    if (lista.length === 0) {
-        campoVoz.innerHTML =
-            '<option value="">Nenhuma voz disponível</option>';
-    }
 }
 
 speechSynthesis.onvoiceschanged = carregarVozes;
@@ -50,10 +52,22 @@ function falar() {
 
     if (texto === "") {
 
-        status.textContent =
-            "Por favor, escreva um texto primeiro.";
+        status.textContent = "Digite um texto primeiro.";
 
         campoTexto.focus();
+
+        return;
+    }
+
+    const vozSelecionada = vozes.find(voz =>
+        voz.lang.toLowerCase() === "pt-br" &&
+        vozes.indexOf(voz) === Number(campoVoz.value)
+    );
+
+    if (!vozSelecionada) {
+
+        status.textContent =
+            "Nenhuma voz brasileira disponível.";
 
         return;
     }
@@ -62,29 +76,22 @@ function falar() {
 
     const leitura = new SpeechSynthesisUtterance(texto);
 
-    const indice = Number(campoVoz.value);
-
-    if (campoVoz.value !== "" && vozes[indice]) {
-        leitura.voice = vozes[indice];
-    }
-
-    leitura.rate = Number(velocidade.value);
+    leitura.voice = vozSelecionada;
 
     leitura.lang = "pt-BR";
 
-    leitura.onstart = function() {
-        status.textContent =
-            "Lendo seu texto em voz alta...";
+    leitura.rate = Number(velocidade.value);
+
+    leitura.onstart = () => {
+        status.textContent = "Lendo em português brasileiro...";
     };
 
-    leitura.onend = function() {
-        status.textContent =
-            "Leitura concluída!";
+    leitura.onend = () => {
+        status.textContent = "Leitura concluída!";
     };
 
-    leitura.onerror = function() {
-        status.textContent =
-            "Não foi possível reproduzir a voz.";
+    leitura.onerror = () => {
+        status.textContent = "Erro ao reproduzir a voz.";
     };
 
     speechSynthesis.speak(leitura);
@@ -93,10 +100,7 @@ function falar() {
 
 function pausar() {
 
-    if (
-        speechSynthesis.speaking &&
-        !speechSynthesis.paused
-    ) {
+    if (speechSynthesis.speaking && !speechSynthesis.paused) {
 
         speechSynthesis.pause();
 
@@ -133,4 +137,6 @@ function limpar() {
     status.textContent = "Texto apagado.";
 
     campoTexto.focus();
+}
+
 }
